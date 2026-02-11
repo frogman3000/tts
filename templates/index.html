@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTS Generator</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .container {
+            border: 1px solid #ccc;
+            padding: 2rem;
+            border-radius: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        textarea,
+        select,
+        input[type="file"],
+        input[type="text"] {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.25rem;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #audio-player {
+            margin-top: 2rem;
+            width: 100%;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #loading {
+            display: none;
+            color: #666;
+            margin-top: 1rem;
+        }
+
+        /* Branding */
+        .branding-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+
+        .brand-logo {
+            height: 50px;
+        }
+
+        .brand-selector {
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .tab.active {
+            background-color: #f8f9fa;
+            border-color: #ccc;
+            border-bottom-color: #fff;
+            font-weight: bold;
+        }
+
+        .tab:hover:not(.active) {
+            background-color: #f0f0f0;
+        }
+
+        /* History Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .audio-cell {
+            width: 300px;
+        }
+
+        /* Lumeris Theme Overrides (Dynamic) */
+        body.theme-lumeris button {
+            background-color: #002D56;
+        }
+
+        /* Example Lumeris Blue */
+        body.theme-lumeris button:hover {
+            background-color: #004080;
+        }
+    </style>
+</head>
+
+<body class="theme-cymbal">
+    <div class="container">
+        <div class="branding-header">
+            <img src="/static/images/cymbal_logo.png" alt="Brand Logo" id="brand-logo" class="brand-logo">
+        </div>
+
+        <h1>Text to Speech Generator</h1>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('generator')">Generator</div>
+            <div class="tab" onclick="switchTab('streaming')" style="display: none;">Streaming</div>
+            <div class="tab" onclick="switchTab('history')">History</div>
+            <a href="/architecture" class="tab" style="text-decoration: none; color: inherit; border-bottom: none;">Architecture</a>
+            <a href="/help" class="tab" style="text-decoration: none; color: inherit; border-bottom: none;">Help</a>
+        </div>
+
+        <!-- GENERATOR TAB -->
+        <div id="tab-generator" class="tab-content">
+            <div class="form-group">
+                <label>Job Name (Optional)</label>
+                <input type="text" id="job-name-input" placeholder="e.g. Compliance Training Module 1">
+            </div>
+
+            <div class="form-group">
+                <label>1. Input Source</label>
+                <textarea id="text-input" rows="5"
+                    placeholder="Enter text here...">Google Cloud Text-to-Speech allows developers to synthesize natural-sounding speech with over 30 voices, available in multiple languages and variants. It applies DeepMind's groundbreaking research in WaveNet and Google's powerful neural networks to deliver the highest fidelity possible.</textarea>
+                <div style="margin-top: 0.5rem;">OR Upload Document (.txt):</div>
+                <input type="file" id="file-input" accept=".txt">
+            </div>
+
+            <div class="form-group">
+                <label>2. Select Service</label>
+                <div>
+                    <input type="radio" id="service-chirp" name="service" value="chirp" checked onchange="loadVoices()">
+                    <label for="service-chirp" style="display:inline;">Google Cloud TTS (Chirp, Journey, etc.)</label>
+                </div>
+                <div>
+                    <input type="radio" id="service-gemini" name="service" value="gemini" onchange="loadVoices()">
+                    <label for="service-gemini" style="display:inline;">Gemini TTS</label>
+                </div>
+            </div>
+
+            <div class="form-group" id="voice-filter-container">
+                <label for="voice-filter">Filter by Type</label>
+                <select id="voice-filter" onchange="renderVoiceOptions()">
+                    <option value="all">All Types</option>
+                    <option value="Chirp-HD">Chirp 3 HD</option>
+                    <option value="Journey">Journey</option>
+                    <option value="Neural2">Neural2</option>
+                    <option value="Studio">Studio</option>
+                    <option value="WaveNet">WaveNet</option>
+                    <option value="Standard">Standard</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="voice-select">3. Select Voice</label>
+                <select id="voice-select">
+                    <option value="">Select a service first...</option>
+                </select>
+            </div>
+
+            <!-- CHIRP CONTROLS -->
+            <div id="chirp-controls">
+                <div class="form-group">
+                    <label>Speed (Rate): <span id="speed-val">1.0</span>x</label>
+                    <input type="range" id="speed-input" min="0.25" max="4.0" step="0.25" value="1.0"
+                        oninput="document.getElementById('speed-val').innerText = this.value">
+                </div>
+                <div class="form-group">
+                    <label>Volume Gain: <span id="volume-val">0</span> dB</label>
+                    <input type="range" id="volume-input" min="-10" max="10" step="1" value="0"
+                        oninput="document.getElementById('volume-val').innerText = this.value">
+                    <small style="color: #666; display: block; margin-top: 0.25rem;">Range: -10dB to +10dB</small>
+                </div>
+            </div>
+
+            <div class="form-group hidden" id="prompt-group">
+                <label for="style-prompt">4. Style Prompt (Optional)</label>
+                <textarea id="style-prompt" rows="2"
+                    placeholder="e.g. 'Speak like an excited news anchor'">Speak in a warm, engaging, and professional tone, suitable for a technical demonstration.</textarea>
+            </div>
+
+            <button onclick="generateSpeech()">Generate Speech</button>
+            <div id="loading">Generating audio... please wait.</div>
+
+            <audio id="audio-player" controls style="display:none;"></audio>
+        </div>
+
+        <!-- STREAMING TAB -->
+        <div id="tab-streaming" class="hidden tab-content">
+            <h2>Streaming TTS (Beta)</h2>
+            <div class="form-group">
+                <label>1. Enter Text OR Upload</label>
+                <textarea id="stream-text-input" rows="4"
+                    placeholder="Enter text to stream...">Google Cloud Text-to-Speech allows developers to synthesize natural-sounding speech with over 30 voices, available in multiple languages and variants. It applies DeepMind's groundbreaking research in WaveNet and Google's powerful neural networks to deliver the highest fidelity possible.</textarea>
+                <input type="file" id="stream-file-input" accept=".txt,.pdf" style="margin-top: 0.5rem;"
+                    onchange="loadStreamFile(this)">
+            </div>
+
+            <div class="form-group">
+                <label>2. Voice</label>
+                <select id="stream-voice-select">
+                    <option value="en-US-Chirp3-HD-Charon">en-US-Chirp3-HD-Charon (Default)</option>
+                    <option value="en-US-Chirp3-HD-Puck">en-US-Chirp3-HD-Puck</option>
+                    <option value="en-US-Chirp3-HD-Fenrir">en-US-Chirp3-HD-Fenrir</option>
+                    <option value="en-US-Chirp3-HD-Aoede">en-US-Chirp3-HD-Aoede</option>
+                    <option value="en-US-Chirp3-HD-Zephyr">en-US-Chirp3-HD-Zephyr</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <button onclick="startStreaming()">Start Streaming</button>
+            </div>
+
+            <div class="form-group">
+                <audio id="stream-player" controls style="width: 100%; display: none;"></audio>
+            </div>
+            <div id="stream-loading" class="hidden">Connecting to stream...</div>
+        </div>
+
+        <!-- HISTORY TAB -->
+        <div id="tab-history" class="hidden tab-content">
+            <div id="history-loading">Loading history...</div>
+            <table id="history-table" class="hidden">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Job Name</th>
+                        <th>Document</th>
+                        <th>Voice</th>
+                        <th>Audio</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows will be populated here -->
+                </tbody>
+            </table>
+        </div>
+
+
+        <div style="text-align: center; margin-top: 2rem; color: #666; font-size: 0.8rem;">
+            &copy; John O'Donnell 2026
+        </div>
+    </div>
+
+    <script>
+
+                            let allVoices = [];
+
+        async function loadVoices() {
+            const service = document.querySelector('input[name="service"]:checked').value;
+            const promptGroup = document.getElementById('prompt-group');
+            const chirpControls = document.getElementById('chirp-controls');
+            const filterContainer = document.getElementById('voice-filter-container');
+
+            promptGroup.classList.toggle('hidden', service !== 'gemini');
+            if (chirpControls) {
+                chirpControls.classList.toggle('hidden', service !== 'chirp');
+            }
+            if (filterContainer) {
+                filterContainer.classList.toggle('hidden', service !== 'chirp');
+            }
+
+            const select = document.getElementById('voice-select');
+            select.innerHTML = '<option>Loading...</option>';
+
+            try {
+                const response = await fetch(`/voices?service=${service}`);
+                                                                            allVoices = await response.json();
+                                                                            renderVoiceOptions();
+                                                                        } catch (e) {
+                                                                            select.innerHTML = '<option>Error loading voices</option>';
+                                                                            console.error(e);
+                                                                        }
+                                                                    }
+
+                                                                    function renderVoiceOptions() {
+                                                                        const select = document.getElementById('voice-select');
+                                                                        const filter = document.getElementById('voice-filter');
+                                                                        const service = document.querySelector('input[name="service"]:checked').value;
+
+                                                                        // Only use filter if we are in Chirp mode and filter exists
+                                                                        const filterType = (service === 'chirp' && filter) ? filter.value : 'all';
+
+                                                            select.innerHTML = '';
+
+                                                            const filtered = allVoices.filter(voice => {
+                                                                if (filterType === 'all') return true;
+                                                                // Special case for 'standard' vs 'studio' vs 'wavenet'
+                                                                // Most names are like en-US-Studio-M, en-US-Standard-A
+                                                                return voice.name.includes(filterType);
+                                                            });
+
+                                                            if (filtered.length === 0) {
+                                                                const option = document.createElement('option');
+                                                                option.textContent = "No voices found for this type";
+                                                                select.appendChild(option);
+                                                                return;
+                                                            }
+
+                                                            filtered.forEach(voice => {
+                                                                const option = document.createElement('option');
+                                                                option.value = voice.name;
+                                                                option.textContent = `${voice.name} (${voice.gender})`;
+                                                                select.appendChild(option);
+                                                            });
+        }
+
+        async function generateSpeech() {
+            const service = document.querySelector('input[name="service"]:checked').value;
+            const voice = document.getElementById('voice-select').value;
+            const text = document.getElementById('text-input').value;
+            const jobName = document.getElementById('job-name-input').value;
+            const fileInput = document.getElementById('file-input');
+            const prompt = document.getElementById('style-prompt').value;
+
+            const speed = document.getElementById('speed-input').value;
+            const volume = document.getElementById('volume-input').value;
+
+            const player = document.getElementById('audio-player');
+            const loading = document.getElementById('loading');
+
+            if (!text && !fileInput.files.length) {
+                alert('Please enter text or upload a file.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('service', service);
+            formData.append('voice', voice);
+            formData.append('job_name', jobName);
+            formData.append('prompt', prompt);
+            formData.append('speed', speed);
+            formData.append('volume', volume);
+
+            if (fileInput.files.length) {
+                formData.append('file', fileInput.files[0]);
+            } else {
+                formData.append('text', text);
+            }
+
+            loading.style.display = 'block';
+            player.style.display = 'none';
+
+            try {
+                const response = await fetch('/synthesize', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.error || 'Failed to generate');
+                }
+
+                const result = await response.json();
+
+                player.src = result.url;
+                player.style.display = 'block';
+                player.play();
+
+            } catch (e) {
+                alert('Error: ' + e.message);
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        // --- STREAMING LOGIC ---
+        function loadStreamFile(input) {
+            const file = input.files[0];
+            if (!file) return;
+            if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('stream-text-input').value = e.target.result;
+                };
+                reader.readAsText(file);
+            } else {
+                alert("Only .txt files supported for client-side preview in Streaming tab currently.");
+            }
+        }
+
+        function startStreaming() {
+            const text = document.getElementById('stream-text-input').value;
+            const voice = document.getElementById('stream-voice-select').value;
+            const player = document.getElementById('stream-player');
+            const loading = document.getElementById('stream-loading');
+
+            if (!text) {
+                alert("Please enter text.");
+                return;
+            }
+
+            loading.classList.remove('hidden');
+            player.style.display = 'none';
+            player.src = '';
+
+            const params = new URLSearchParams({
+                text: text,
+                voice: voice
+            });
+
+            player.src = `/stream?${params.toString()}`;
+            player.style.display = 'block';
+            player.play().catch(e => console.log("Auto-play blocked:", e));
+
+            player.onloadeddata = () => {
+                loading.classList.add('hidden');
+            };
+            player.onerror = () => {
+                loading.classList.add('hidden');
+                    };
+                }
+
+
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
+
+            document.getElementById('tab-generator').classList.add('hidden');
+            document.getElementById('tab-history').classList.add('hidden');
+            document.getElementById('tab-streaming').classList.add('hidden');
+
+
+            if (tabName === 'generator') {
+                document.getElementById('tab-generator').classList.remove('hidden');
+            } else if (tabName === 'streaming') {
+                document.getElementById('tab-streaming').classList.remove('hidden');
+
+            } else {
+                document.getElementById('tab-history').classList.remove('hidden');
+                loadHistory();
+            }
+        }
+
+        async function loadHistory() {
+            const table = document.getElementById('history-table');
+            const tbody = table.querySelector('tbody');
+            const loading = document.getElementById('history-loading');
+
+            loading.style.display = 'block';
+            table.classList.add('hidden');
+            tbody.innerHTML = '';
+
+            try {
+                const response = await fetch('/history');
+                const history = await response.json();
+
+                if (history.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6">No history yet.</td></tr>';
+                } else {
+                    history.forEach(entry => {
+                        const tr = document.createElement('tr');
+
+                        // Parse timestamp 20260128_143000 -> Readable
+                        let dateStr = entry.timestamp;
+                        try {
+                            dateStr = entry.timestamp.replace(/(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})/, '$1-$2-$3 $4:$5:$6');
+                        } catch (e) { }
+
+                        // Prepare Document Info
+                        let docLink = '-';
+                        if (entry.text_url) {
+                            docLink = `<a href="${entry.text_url}" target="_blank">View Text</a>`;
+                        } else if (entry.original_filename) {
+                            docLink = entry.original_filename;
+                        }
+
+                        tr.innerHTML = `
+                            <td>${dateStr}</td>
+                            <td>${entry.job_name || 'Untitled'}</td>
+                            <td>${docLink}</td>
+                            <td>${entry.service}<br><small>${entry.voice}</small></td>
+                            <td class="audio-cell">
+                                <audio controls src="${entry.url}" style="width: 100%;"></audio>
+                                <a href="${entry.url}" download>Download</a>
+                            </td>
+                            <td>
+                                <button onclick="deleteHistoryItem('${entry.id}')" style="background-color: #dc3545; padding: 0.5rem 1rem; font-size: 0.8rem;">Delete</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+                table.classList.remove('hidden');
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="6">Error loading history.</td></tr>';
+                table.classList.remove('hidden');
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+            async function deleteHistoryItem(id) {
+                if (!confirm("Are you sure you want to delete this item? This action cannot be undone.")) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/history/${id}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        loadHistory(); // Reload table
+                    } else {
+                        const err = await response.json();
+                        alert("Failed to delete: " + (err.error || "Unknown error"));
+                    }
+                } catch (e) {
+                    alert("Error deleting item: " + e.message);
+                }
+            }
+
+        // Load voices on start
+        loadVoices();
+                            // Initialize branding on load
+
+        // Add file input listener
+        document.getElementById('file-input').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const textInput = document.getElementById('text-input');
+            const fileInput = document.getElementById('file-input');
+
+            if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    textInput.value = e.target.result;
+                    fileInput.value = ''; 
+                };
+                reader.readAsText(file);
+            } else {
+                alert('Only .txt files are supported.');
+                fileInput.value = '';
+            }
+        });
+    </script>
+</body>
+
+</html>

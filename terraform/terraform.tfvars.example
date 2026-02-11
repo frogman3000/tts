@@ -1,0 +1,4 @@
+project_id   = "YOUR_PROJECT_ID"
+region       = "us-central1"
+service_name = "marketing-tts-generator"
+repo_name    = "marketing-tts-repo"

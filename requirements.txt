@@ -1,0 +1,8 @@
+flask
+google-cloud-texttospeech
+google-genai
+requests
+python-dotenv
+gunicorn
+pypdf
+google-cloud-storage

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help - TTS Generator</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.6;
+    }
+
+    .container {
+      border: 1px solid #ccc;
+      padding: 2rem;
+      border-radius: 8px;
+    }
+
+    h1,
+    h2,
+    h3 {
+      color: #333;
+    }
+
+    code {
+      background-color: #f4f4f4;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      text-decoration: none;
+      color: #007bff;
+      font-weight: bold;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <a href="/" class="back-link">&larr; Back to Generator</a>
+
+    <h1>TTS Generator Help</h1>
+
+    <h2>Overview</h2>
+    <p>This application allows you to synthesize speech using Google Cloud Text-to-Speech (TTS) and Vertex AI Gemini
+      TTS. You can generate audio from text or documents, manage history, and stream audio.</p>
+
+    <h2>Usage Guide</h2>
+
+    <h3>1. Generator Tab</h3>
+    <ul>
+      <li><strong>Input</strong>: Enter a "Job Name" (optional), type text, or upload a
+        <code>.txt</code>/<code>.pdf</code> file.
+      </li>
+      <li><strong>Service</strong>: Choose between "Google Cloud TTS" (Standard/Premium voices) or "Gemini TTS"
+        (Generative voices).</li>
+      <li><strong>Voice</strong>: Filter and select your desired voice.</li>
+      <li><strong>Controls</strong>: Adjust speed and volume (Chirp/Standard voices only).</li>
+      <li><strong>Generate</strong>: Click "Generate Speech" to create the audio.</li>
+    </ul>
+
+    <h3>2. History Tab</h3>
+    <ul>
+      <li>View a list of all past generation jobs.</li>
+      <li>Play audio directly in the browser.</li>
+      <li>Download audio or source text.</li>
+      <li>Delete unwanted jobs from storage.</li>
+    </ul>
+
+    <h2>Troubleshooting</h2>
+    <p>If you encounter issues, ensure your project has the required APIs enabled (Text-to-Speech, Vertex AI, Cloud
+      Storage) and that your user/service account has the necessary permissions.</p>
+
+    <hr>
+    <p><small>Ver 1.0 | <a href="/LICENSE.TXT">License</a></small></p>
+  </div>
+</body>
+
+</html>

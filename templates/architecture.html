@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTS Generator Architecture</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            color: #333;
+        }
+    </style>
+    <!-- Use CDN for Mermaid -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.5/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to Generator</a>
+        <h1>System Architecture</h1>
+        <div class="mermaid">
+            flowchart TD
+            User["User / Browser"] -- "HTTP Request" --> Flask["Flask Application"]
+
+            subgraph GCP ["Google Cloud Platform"]
+            Flask -- "Text-to-Speech API" --> GCTTS["Cloud TTS (Chirp/Standard)"]
+            Flask -- "Vertex AI API" --> Gemini["Gemini 2.5 Flash (TTS)"]
+            Flask -- "Read/Write" --> GCS["Cloud Storage (Buckets)"]
+            end
+
+            subgraph Backend ["Backend Services"]
+            Flask -- "Streaming" --> Stream["Streaming Response"]
+            end
+
+            GCTTS -- "Audio Bytes" --> Flask
+            Gemini -- "Audio Bytes" --> Flask
+            Flask -- "Save Audio/History" --> GCS
+            GCS -- "Serve Audio" --> User
+
+        </div>
+
+        <div style="margin-top: 3rem;">
+            <h2>Component Overview</h2>
+            <ul>
+                <li><strong>Flask Application</strong>: Orchestrates requests, manages prompts, and interfaces with GCP
+                    services.</li>
+                <li><strong>Cloud TTS</strong>: Handles standard and neural voice synthesis (Chirp, Journey, Neural2).
+                </li>
+                <li><strong>Gemini 2.5 Flash</strong>: Provides advanced multimodal TTS capabilities with rich style
+                    prompting.</li>
+                <li><strong>Cloud Storage</strong>: Persists generated audio files and job history (JSON).</li>
+
+            </ul>
+        </div>
+    </div>
+    <div style="text-align: center; margin-top: 2rem; color: #666; font-size: 0.8rem;">
+        &copy; John O'Donnell 2026
+    </div>
+    </div>
+</body>
+
+</html>

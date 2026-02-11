@@ -1,0 +1,112 @@
+[
+  {
+    "id": "1528ad82",
+    "filename": "chirp_en-US-Chirp-HD-F_20260205_001612_1528ad82.mp3",
+    "url": "/output/chirp_en-US-Chirp-HD-F_20260205_001612_1528ad82.mp3",
+    "service": "chirp",
+    "voice": "en-US-Chirp-HD-F",
+    "prompt": "",
+    "timestamp": "20260205_001612",
+    "text_snippet": "Hello world"
+  },
+  {
+    "id": "6b4bd79e",
+    "filename": "gemini_Puck_20260129_200741_6b4bd79e.wav",
+    "url": "/output/gemini_Puck_20260129_200741_6b4bd79e.wav",
+    "service": "gemini",
+    "voice": "Puck",
+    "prompt": "Speak in a warm, engaging, and professional tone, suitable for a technical demonstration.",
+    "timestamp": "20260129_200741",
+    "text_snippet": "Lumeris announced today that it will be partnering with Google Cloud to build and advance a cutting-..."
+  },
+  {
+    "id": "9ce4fc95",
+    "filename": "gemini_Fenrir_20260129_193600_9ce4fc95.wav",
+    "url": "/output/gemini_Fenrir_20260129_193600_9ce4fc95.wav",
+    "service": "gemini",
+    "voice": "Fenrir",
+    "prompt": "You are a caring older male doctor from New York city. Speak in a warm, engaging, and professional tone, suitable for a patient interaction.",
+    "timestamp": "20260129_193600",
+    "text_snippet": "Lumeris announced today that it will be partnering with Google Cloud to build and advance a cutting-..."
+  },
+  {
+    "id": "308afd93",
+    "filename": "gemini_Fenrir_20260129_192932_308afd93.wav",
+    "url": "/output/gemini_Fenrir_20260129_192932_308afd93.wav",
+    "service": "gemini",
+    "voice": "Fenrir",
+    "prompt": "You are a caring doctor. Speak in a warm, engaging, and professional tone, suitable for a patient interaction.",
+    "timestamp": "20260129_192932",
+    "text_snippet": "Lumeris announced today that it will be partnering with Google Cloud to build and advance a cutting-..."
+  },
+  {
+    "id": "c85abec1",
+    "filename": "chirp_en-US-Chirp-HD-D_20260128_160009_c85abec1.mp3",
+    "url": "/output/chirp_en-US-Chirp-HD-D_20260128_160009_c85abec1.mp3",
+    "service": "chirp",
+    "voice": "en-US-Chirp-HD-D",
+    "prompt": "Speak in a warm, engaging, and professional tone, suitable for a technical demonstration.",
+    "timestamp": "20260128_160009",
+    "text_snippet": "Google Cloud Text-to-Speech allows developers to synthesize natural-sounding speech with over 30 voi..."
+  },
+  {
+    "id": "b00b572f",
+    "filename": "gemini_Kore_20260128_150027_b00b572f.wav",
+    "url": "/output/gemini_Kore_20260128_150027_b00b572f.wav",
+    "service": "gemini",
+    "voice": "Kore",
+    "prompt": "Speak in a warm, engaging, and professional tone, suitable for a technical demonstration.",
+    "timestamp": "20260128_150027",
+    "text_snippet": "Lumeris announced today that it will be partnering with Google Cloud to build and advance a cutting-..."
+  },
+  {
+    "id": "905ed257",
+    "filename": "gemini_Puck_20260128_145805_905ed257.wav",
+    "url": "/output/gemini_Puck_20260128_145805_905ed257.wav",
+    "service": "gemini",
+    "voice": "Puck",
+    "prompt": "Speak in a warm, engaging, and professional tone, suitable for a technical demonstration.",
+    "timestamp": "20260128_145805",
+    "text_snippet": "Google Cloud Text-to-Speech allows developers to synthesize natural-sounding speech with over 30 voi..."
+  },
+  {
+    "id": "6cf0f7b6",
+    "filename": "chirp_en-US-Chirp-HD-D_20260128_145755_6cf0f7b6.mp3",
+    "url": "/output/chirp_en-US-Chirp-HD-D_20260128_145755_6cf0f7b6.mp3",
+    "service": "chirp",
+    "voice": "en-US-Chirp-HD-D",
+    "prompt": "Speak in a warm, engaging, and professional tone, suitable for a technical demonstration.",
+    "timestamp": "20260128_145755",
+    "text_snippet": "Google Cloud Text-to-Speech allows developers to synthesize natural-sounding speech with over 30 voi..."
+  },
+  {
+    "id": "7b99c5a4",
+    "filename": "chirp_en-US-Chirp-HD-F_20260128_145739_7b99c5a4.mp3",
+    "url": "/output/chirp_en-US-Chirp-HD-F_20260128_145739_7b99c5a4.mp3",
+    "service": "chirp",
+    "voice": "en-US-Chirp-HD-F",
+    "prompt": "Speak in a warm, engaging, and professional tone, suitable for a technical demonstration.",
+    "timestamp": "20260128_145739",
+    "text_snippet": "Google Cloud Text-to-Speech allows developers to synthesize natural-sounding speech with over 30 voi..."
+  },
+  {
+    "id": "6930fde9",
+    "filename": "chirp_en-US-Chirp-HD-D_20260128_145726_6930fde9.mp3",
+    "url": "/output/chirp_en-US-Chirp-HD-D_20260128_145726_6930fde9.mp3",
+    "service": "chirp",
+    "voice": "en-US-Chirp-HD-D",
+    "prompt": "Speak in a warm, engaging, and professional tone, suitable for a technical demonstration.",
+    "timestamp": "20260128_145726",
+    "text_snippet": "Google Cloud Text-to-Speech allows developers to synthesize natural-sounding speech with over 30 voi..."
+  },
+  {
+    "id": "a211d498",
+    "filename": "gemini_Puck_20260128_145705_a211d498.wav",
+    "url": "/output/gemini_Puck_20260128_145705_a211d498.wav",
+    "service": "gemini",
+    "voice": "Puck",
+    "prompt": "",
+    "timestamp": "20260128_145705",
+    "text_snippet": "Testing history"
+  }
+]
